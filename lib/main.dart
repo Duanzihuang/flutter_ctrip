@@ -1,102 +1,79 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(SampleApp());
+  runApp(new MaterialApp(
+    theme: ThemeData(primarySwatch: Colors.blue),
+    home:HeroAnimation()
+  ));
 }
 
-class SampleApp extends StatelessWidget {
+class PhotoHero extends StatelessWidget{
+  const PhotoHero({Key key,this.photo,this.onTap,this.width}) : super(key:key);
+
+  final String photo;
+  final VoidCallback onTap;
+  final double width;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: SampleAppPage(),
+    return SizedBox(
+      width: width,
+      child: Hero(
+        tag: photo,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            child: Image.network(
+              photo,
+              fit: BoxFit.contain
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
 
-class SampleAppPage extends StatefulWidget {
-  SampleAppPage({Key key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return _SampleAppPageState();
-  }
-}
-
-class _SampleAppPageState extends State<SampleAppPage> {
-  List widgets = [];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    loadData();
-  }
-
-  // 是否展示进度条
-  showLoadingDialog() {
-    return widgets.length == 0;
-  }
-
-  /*
-  * 展示内容
-  * */
-  getBody() {
-    if (showLoadingDialog()) {
-      return getProgressDialog();
-    } else {
-      print('show ListView');
-      return getListView();
-    }
-  }
-
-  getProgressDialog() {
-    return Center(child: CircularProgressIndicator());
-  }
-
-  Widget getRow(i) {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Text("Row ${widgets[i]["title"]}"),
-    );
-  }
-
-  /**
-   * 获取ListView，并且渲染
-   */
-  ListView getListView() {
-    return ListView.builder(
-        itemCount: widgets.length,
-        itemBuilder: (BuildContext context, int position) {
-          return getRow(position);
-        });
-  }
-
-  // 加载数据
-  loadData() async {
-    String dataURL = 'https://jsonplaceholder.typicode.com/posts';
-
-    http.Response response = await http.get(dataURL);
-
-    // 赋值给模型
-    setState(() {
-      widgets = json.decode(response.body);
-    });
-  }
-
+class HeroAnimation extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    var timeDilation = 10.0; // 1.0 means normal animation speed.
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('ListView 展示'),
+        title: Text('Hero Animation'),
       ),
-      body: getBody(),
+      body: Center(
+        child: PhotoHero(
+          photo: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574863884536&di=747d4cbb815c2645a9ec7dd457929c24&imgtype=0&src=http%3A%2F%2Fpic162.nipic.com%2Ffile%2F20180424%2F25159533_220757424034_2.jpg',
+          width: 300,
+          onTap: (){
+            Navigator.of(context).push(MaterialPageRoute<void>(
+              builder: (BuildContext context){
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Flippers Page')
+                  ),
+                  body: Container(
+                    color: Colors.lightBlueAccent,
+                    padding: const EdgeInsets.all(16.0),
+                    alignment: Alignment.topLeft,
+                    child: PhotoHero(
+                      photo: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574863884536&di=747d4cbb815c2645a9ec7dd457929c24&imgtype=0&src=http%3A%2F%2Fpic162.nipic.com%2Ffile%2F20180424%2F25159533_220757424034_2.jpg',
+                      width: 100.0,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                );
+              }
+            ));
+          },
+        ),
+      ),
     );
   }
 }
