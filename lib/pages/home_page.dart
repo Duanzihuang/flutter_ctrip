@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
+// 计算appBar透明度，滚动出去的最大距离
+const APPBAR_SCROLL_OFFSET = 100;
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -14,26 +17,77 @@ class _HomePageState extends State<HomePage> {
     'https://dimg04.c-ctrip.com/images/700c10000000pdili7D8B_780_235_57.jpg'
   ];
 
+  // 自定义appBar的透明度
+  double appBarAlpha = 0.0;
+
+  _onScroll(offset){
+    // offset 滚出去的距离
+    var alpha = offset / APPBAR_SCROLL_OFFSET;
+    if (alpha < 0) {
+      alpha = 0.0;
+    } else if (alpha > 1) {
+      alpha = 1.0;
+    }
+
+    setState(() {
+      appBarAlpha = alpha;
+    });
+
+    print(alpha);
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 200,
-              child: Swiper(
-                  itemCount: _imageUrls.length,
-                  itemBuilder: (BuildContext context, int i) {
-                    return Image.network(_imageUrls[i], fit: BoxFit.fill);
-                  },
-                  autoplay: true,
-                  pagination: SwiperPagination()),
-            )
-          ],
-        ),
-      ),
+      // 可以移除iPhoneX上面刘海上面的间距
+      body:Stack(
+       children: <Widget>[
+         MediaQuery.removePadding(
+             context: context,
+             removeTop: true, // 移除顶部的间距
+             child: NotificationListener(
+               onNotification: (scrollNotification){
+                 if (scrollNotification is ScrollUpdateNotification && scrollNotification.depth == 0) {
+                   // 滚动，并且只有 ListView滚动的时候 ，scrollNotification.depth == 0 代表第一级子元素(ListView)滚动
+                   _onScroll(scrollNotification.metrics.pixels);
+                 }
+               },
+               child: ListView(
+                 children: <Widget>[
+                   Container(
+                     height: 200,
+                     child: Swiper(
+                         itemCount: _imageUrls.length,
+                         itemBuilder: (BuildContext context, int i) {
+                           return Image.network(_imageUrls[i], fit: BoxFit.fill);
+                         },
+                         autoplay: true,
+                         pagination: SwiperPagination()),
+                   ),
+                   Container(
+                       height: 800,
+                       child: ListTile(
+                         title: Text('哈哈'),
+                       )
+                   )
+
+                 ],
+               ),
+             )
+         ),
+         Opacity(
+           opacity: appBarAlpha,
+           child: Container(
+             height: 80,
+             decoration: BoxDecoration(color: Colors.white),
+             child: Center(
+               child: Padding(padding: EdgeInsets.only(top: 30),child: Text('首页'))
+             ),
+           ),
+         )
+       ],
+      )
     );
   }
 }
