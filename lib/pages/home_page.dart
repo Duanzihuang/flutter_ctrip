@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ctrip/dao/home_dao.dart';
+import 'package:flutter_ctrip/model/common_model.dart';
+import 'package:flutter_ctrip/model/home_model.dart';
+import 'package:flutter_ctrip/widgets/local_nav.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 // 计算appBar透明度，滚动出去的最大距离
@@ -20,6 +24,30 @@ class _HomePageState extends State<HomePage> {
   // 自定义appBar的透明度
   double appBarAlpha = 0.0;
 
+  // 本地Nav列表
+  List<CommonModel> localNavList = null;
+
+  @override
+  void initState(){
+    super.initState();
+
+    loadData();
+  }
+
+  loadData() async{
+    try {
+      HomeModel model = await HomeDao.fetch();
+
+      setState(() {
+        localNavList = model.localNavList;
+      });
+    } catch(e) {
+      setState(() {
+        print(e);
+      });
+    }
+  }
+
   _onScroll(offset){
     // offset 滚出去的距离
     var alpha = offset / APPBAR_SCROLL_OFFSET;
@@ -40,6 +68,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      backgroundColor: Color(0xfff2f2f2),
       // 可以移除iPhoneX上面刘海上面的间距
       body:Stack(
        children: <Widget>[
@@ -64,6 +93,10 @@ class _HomePageState extends State<HomePage> {
                          },
                          autoplay: true,
                          pagination: SwiperPagination()),
+                   ),
+                   Padding(
+                     padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                     child: LocalNav(localNavList: localNavList),
                    ),
                    Container(
                        height: 800,

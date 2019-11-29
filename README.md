@@ -113,3 +113,29 @@ shared_preferences
 ExpansionTile
 ```
 
+## Flutter 与 Android混合开发
+
+> 创建Flutter module【和原生应用处于同一级】
+
+```
+flutter create -t module flutter_module
+
+环境配置参考:
+https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps
+```
+
+> Java代码中调用Flutter Module
+
+```
+Flutter.createView
+
+FlutterFragment
+```
+
+## Flutter 与 iOS混合开发
+
+```
+环境配置参考:
+https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps
+```
+
