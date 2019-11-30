@@ -76,11 +76,11 @@ class _WebViewState extends State<WebView> {
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     _onUrlChanged.cancel();
     _onStateChanged.cancel();
     _onHttpError.cancel();
     flutterWebviewPlugin.dispose();
+    super.dispose();
   }
 
   @override
@@ -125,11 +125,16 @@ class _WebViewState extends State<WebView> {
 
     // 没有隐藏AppBar
     return Container(
+      color: backgroundColor,
+      padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
       child: FractionallySizedBox(
         widthFactor: 1, // 宽度占满整个屏幕
         child: Stack(
           children: <Widget>[
             GestureDetector(
+              onTap: (){
+                Navigator.pop(context);
+              },
               child: Container(
                 margin: EdgeInsets.only(left: 10),
                 child: Icon(Icons.close,size: 26,color: backButtonColor),
