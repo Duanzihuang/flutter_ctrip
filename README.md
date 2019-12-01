@@ -113,6 +113,14 @@ shared_preferences
 ExpansionTile
 ```
 
+> 和视图相关
+
+```
+获取屏幕宽高
+MediaQuery.of(context).size.width
+MediaQuery.of(context).size.height
+```
+
 ## Flutter 与 Android混合开发
 
 > 创建Flutter module【和原生应用处于同一级】
