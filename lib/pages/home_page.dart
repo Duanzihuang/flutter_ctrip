@@ -8,12 +8,14 @@ import 'package:flutter_ctrip/widgets/grid_nav.dart';
 import 'package:flutter_ctrip/widgets/loading_container.dart';
 import 'package:flutter_ctrip/widgets/local_nav.dart';
 import 'package:flutter_ctrip/widgets/sales_box.dart';
+import 'package:flutter_ctrip/widgets/search_bar.dart';
 import 'package:flutter_ctrip/widgets/sub_nav.dart';
 import 'package:flutter_ctrip/widgets/webview.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 // 计算appBar透明度，滚动出去的最大距离
 const APPBAR_SCROLL_OFFSET = 100;
+const SEARCH_BAR_DEFAULT_TEXT = '网红打卡地 景点 酒店 美食';
 
 class HomePage extends StatefulWidget {
   @override
@@ -123,6 +125,42 @@ class _HomePageState extends State<HomePage> {
 
   // 抽取appBar
   Widget get _appBar{
+    return Column(
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              //AppBar 渐变遮罩背景
+              colors: [Color(0x66000000),Colors.transparent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter
+            ),
+          ),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+            height: 80,
+            decoration: BoxDecoration(
+              color: Color.fromARGB((appBarAlpha * 255).toInt(), 255, 255, 255)
+            ),
+            child: SearchBar(
+              searchBarType: appBarAlpha > 0.2 ? SearchBarType.homeHighlight : SearchBarType.home,
+              inputBoxClick: _jumpToSearch,
+              speakClick: _jumpToSpeak,
+              defaultText: SEARCH_BAR_DEFAULT_TEXT,
+              leftButtonClick: (){},
+            ),
+          ),
+        ),
+        // 背景阴影
+        Container(
+          height: appBarAlpha > 0.2 ? 0.5 : 0,
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: Colors.black12,blurRadius: 0.5)]
+          ),
+        )
+      ],
+    );
+    /**
     return Opacity(
       opacity: appBarAlpha,
       child: Container(
@@ -133,6 +171,16 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+     */
+  }
+
+  // 跳转到对应的页面
+  _jumpToSearch() {
+
+  }
+
+  _jumpToSpeak() {
+
   }
 
   // 抽取ListView
